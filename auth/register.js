@@ -1,5 +1,8 @@
-const apiUrl = 'http://127.0.0.1:8000/api/dev'
+if (localStorage.getItem('jwt')) {
+    window.location.href = '../products.html';
+}
 
+const apiUrl = 'http://127.0.0.1:8000/api/dev'
 const form = document.getElementById("register-form");
 form.addEventListener("submit", async (event) => {
     event.preventDefault();

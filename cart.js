@@ -3,7 +3,6 @@ if (!localStorage.getItem('jwt')) {
 }
 
 const apiUrl = 'http://127.0.0.1:8000/api/dev'
-
 const jwt = localStorage.getItem("jwt");
 const headers = new Headers({
     "Authorization": `Token ${jwt}`
