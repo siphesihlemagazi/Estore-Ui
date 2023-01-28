@@ -18,7 +18,7 @@ fetch(`${apiUrl}/catalogue/products/`)
                                 Add to cart</button>
                             </div>
                             `
-                            products.appendChild(product)
+            products.appendChild(product)
 
         });
     })
@@ -29,16 +29,20 @@ fetch(`${apiUrl}/catalogue/products/`)
 setTimeout(() => {
     const productAddToCart = document.querySelectorAll(".product");
 
-    function addToCart(customer, products, size) {
+    function addToCart(products, size) {
         const data = {
-            customer: customer,
             products: products,
             size: size
         };
+        const jwt = localStorage.getItem("jwt");
+        const headers = new Headers({
+            "Content-Type": "application/json",
+            "Authorization": `Token ${jwt}`
+        });
         console.log(data);
         fetch(`${apiUrl}/cart/items/`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: headers,
             body: JSON.stringify(data)
         })
             .then(response => response.json())
@@ -53,7 +57,7 @@ setTimeout(() => {
     for (let i = 0; i < productAddToCart.length; i++) {
         productAddToCart[i].addEventListener("click", function () {
             alert(this.value);
-            addToCart(1, this.value, 8);
+            addToCart(this.value, 8);
         });
     }
 

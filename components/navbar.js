@@ -41,7 +41,7 @@ navbar.innerHTML = `
 
                 <div class="col">
                     <a class="d-flex d-md-flex flex-row align-items-center 
-                    text-dark text-decoration-none" href="cart.html">
+                    text-dark text-decoration-none" id="cart-url" href="cart.html">
                         <span class="shop-bag"><i class="bi bi-bag"></i></span>
                         <div class="d-flex flex-column ms-2">
                             <span class="qty">1 Product(s)</span>
@@ -98,6 +98,7 @@ const authLinks = document.getElementById("auth-links");
 const loginLink = authLinks.querySelector("a[href='auth/login.html']");
 const registerLink = authLinks.querySelector("a[href='auth/register.html']");
 const logoutLink = authLinks.querySelector("a#logout");
+const cartLink = document.getElementById("cart-url");
 
 if (localStorage.getItem("jwt")) {
   loginLink.style.display = "none";
@@ -107,6 +108,7 @@ if (localStorage.getItem("jwt")) {
   loginLink.style.display = "block";
   registerLink.style.display = "block";
   logoutLink.style.display = "none";
+  cartLink.setAttribute("href", "auth/login.html");
 }
 
 // Logout

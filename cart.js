@@ -1,3 +1,7 @@
+if (!localStorage.getItem('jwt')) {
+    window.location.href = './auth/login.html';
+}
+
 const apiUrl = 'http://127.0.0.1:8000/api/dev'
 
 const jwt = localStorage.getItem("jwt");
