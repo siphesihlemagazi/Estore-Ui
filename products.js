@@ -9,14 +9,14 @@ fetch(`${apiUrl}/catalogue/products/`)
             const product = document.createElement('div')
             product.setAttribute('class', 'col-md-3')
             product.innerHTML = `
-                            <div class="card p-3">
+                            <a href="product-details.html?product=${item.id}" class="card p-3 text-decoration-none text-dark">
                                 <img src="${item.images[0].file}" alt="${item.name}">
                                 <h4>${item.name}</h4>
                                 <p class="small">This is the amazing clothing category by ecommerce.</p>
                                 <h4>R${item.regular_price}</h4>
                                 <button type="button" value="${item.id}" class="btn btn-outline-dark mt-3 product">
                                 Add to cart</button>
-                            </div>
+                            </a>
                             `
             products.appendChild(product)
 
