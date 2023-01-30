@@ -7,15 +7,15 @@ fetch(`${apiUrl}/catalogue/products/`)
         data.forEach(item => {
             console.log(item)
             const product = document.createElement('div')
-            product.setAttribute('class', 'col-md-3')
+            product.setAttribute('class', 'col-md-3 mb-3')
             product.innerHTML = `
                             <a href="product-details.html?product=${item.id}" class="card p-3 text-decoration-none text-dark">
-                                <img src="${item.images[0].file}" alt="${item.name}">
-                                <h4>${item.name}</h4>
+                                <div class="text-center">
+                                    <img src="${item.images[0].file}" width="200" height="200" alt="${item.name}">
+                                </div>
+                                <h5 class="text-uppercase">${item.name}</h5>
                                 <p class="small">This is the amazing clothing category by ecommerce.</p>
                                 <h4>R${item.regular_price}</h4>
-                                <button type="button" value="${item.id}" class="btn btn-outline-dark mt-3 product">
-                                Add to cart</button>
                             </a>
                             `
             products.appendChild(product)

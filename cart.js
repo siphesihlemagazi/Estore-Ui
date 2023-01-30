@@ -28,7 +28,11 @@ fetch(`${apiUrl}/cart/items/`, {
                                 alt="${item.product.name}">
                         </div>
                         <div class="col-md-3 col-lg-3 col-xl-3">
-                            <p class="lead fw-normal mb-2">${item.product.name}</p>
+                            <p class="lead fw-normal mb-2">
+                                <a href="product-details.html?product=${item.product.id}" class="text-decoration-none text-dark">
+                                    ${item.product.name}
+                                </a>
+                            </p>
                             <p><span class="text-muted">Size: </span>${item.size} <br><span class="text-muted">Color:
                                 </span>${getCartItemColor(item.product.specifications)}</p>
                         </div>
