@@ -37,16 +37,16 @@ fetch(`${apiUrl}/cart/items/`, {
                                 </span>${getCartItemColor(item.product.specifications)}</p>
                         </div>
                         <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
-                            <button class="btn btn-link px-2"
+                            <button class="btn btn-link px-2" id="decrease-qty"
                                 onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
                                 <i class="bi bi-dash"></i>
                             </button>
             
-                            <input id="form1" min="0" name="quantity" value="${item.quantity}" type="number"
+                            <input id="qty" min="0" name="quantity" value="${item.quantity}" type="number"
                                 class="form-control form-control-sm" />
             
                             <button class="btn btn-link px-2"
-                                onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
+                                onclick="increaseQty()">
                                 <i class="bi bi-plus"></i>
                             </button>
                         </div>
@@ -77,4 +77,58 @@ function getCartItemColor(specifications) {
             return specifications[i].value
         }
     }
+}
+
+function increaseQty(){
+    // this.parentNode.querySelector('input[type=number]').stepUp()
+    let qty = document.getElementById("qty");
+    alert(qty.value)
+}
+
+function addToCart(productId) {
+    const increaseQty = document.getElementById("increase-qty");
+    if (!increaseQty) return;
+
+    let selectedSize;
+
+    increaseQty.addEventListener("click", event => {
+        alert("this")
+        const jwt = localStorage.getItem("jwt");
+        const products = productId;
+
+        if (!selectedSize) {
+            alert("Please select a size");
+            return;
+        }
+        if (!jwt) {
+            alert("Login to add this product to cart!");
+            return;
+        }
+
+        fetch(`${apiUrl}/cart/items//`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${jwt}`
+            },
+            body: JSON.stringify({
+                products,
+                size: selectedSize,
+            })
+        })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(res.statusText);
+                }
+                return res.json();
+            })
+            .then(data => {
+                console.log(data);
+                alert("Product added to cart");
+            })
+            .catch(error => {
+                console.error(error);
+                alert("Failed to add product to cart");
+            });
+    });
 }
