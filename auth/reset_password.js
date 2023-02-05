@@ -23,9 +23,9 @@ passwordResetForm.addEventListener('submit', async (event) => {
     const resMessage = document.getElementById("err-message");
     if (!response.ok) {
         const error = await response.json();
-        console.error(`Error: ${error.error}`);
+        console.error(`Error: ${error.message}`);
         resMessage.innerHTML = `<div class="alert alert-warning mb-4 small" id="err-message" role="alert">
-                                    ${error.error}
+                                    ${error.message}
                                 </div>`
         return;
     }
