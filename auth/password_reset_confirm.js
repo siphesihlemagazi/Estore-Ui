@@ -25,21 +25,20 @@ passwordResetConfirmForm.addEventListener('submit', async (event) => {
             token
         })
     });
-    const resMessage = document.getElementById("err-message");
-    const res = await response.json();
-    if (res.error) {
-        console.error(`Error: ${res.error}`);
-        resMessage.innerHTML = `<div class="alert alert-warning mb-4 small" id="err-message" role="alert">
-                                    ${res.error}
-                                </div>`
+    const errorMessage = document.getElementById("err-message");
+    if (!response.ok) {
+        const error = await response.json();
+        for (let key in error) {
+            let message = error[key].join('\n').replace(/[\[\]',]/g, '')
+            errorMessage.innerHTML = `<div class="alert alert-warning mb-4 small" id="err-message" role="alert">
+                                    ${message}
+                                </div>`;
+        }
         return;
     }
-    else {
-        console.log(`Error: ${msg.message}`);
-        resMessage.innerHTML = `<div class="alert alert-info mb-4 small" id="err-message" role="alert">
-                                    ${res.message}
-                                </div>`
-        return;
+    else{
+        window.location.href = 'login.html';
     }
+
 });
 
