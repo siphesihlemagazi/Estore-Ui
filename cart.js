@@ -37,21 +37,20 @@ fetch(`${apiUrl}/cart/items/`, {
                                 </span>${getCartItemColor(item.product.specifications)}</p>
                         </div>
                         <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
-                            <button class="btn btn-link px-2" id="decrease-qty"
-                                onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
+                            <button class="btn btn-link px-2">
                                 <i class="bi bi-dash"></i>
                             </button>
             
-                            <input id="qty" min="0" name="quantity" value="${item.quantity}" type="number"
+                            <input min="0" name="quantity" value="${item.quantity}" type="number"
                                 class="form-control form-control-sm" />
             
-                            <button class="btn btn-link px-2"
-                                onclick="increaseQty()">
+                            <button class="btn btn-link px-2" 
+                            onclick="incrementQty(${item.product.id}, '${item.size}', this)">
                                 <i class="bi bi-plus"></i>
                             </button>
                         </div>
                         <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
-                            <h5 class="mb-0">R${item.price}</h5>
+                            <h5 class="mb-0" id="item-price">R${item.price}</h5>
                         </div>
                         <div class="col-md-1 col-lg-1 col-xl-1 text-end">
                             <a href="#!" class="text-danger"><i class="bi bi-trash"></i></a>
@@ -79,56 +78,45 @@ function getCartItemColor(specifications) {
     }
 }
 
-function increaseQty(){
-    // this.parentNode.querySelector('input[type=number]').stepUp()
-    let qty = document.getElementById("qty");
-    alert(qty.value)
-}
+function incrementQty(itemId, itemSize, itemBtn) {
+    const jwt = localStorage.getItem("jwt");
+    const products = itemId;
 
-function addToCart(productId) {
-    const increaseQty = document.getElementById("increase-qty");
-    if (!increaseQty) return;
+    if (!itemSize) {
+        alert("Please select a size");
+        return;
+    }
+    if (!jwt) {
+        alert("Login to add this product to cart!");
+        return;
+    }
 
-    let selectedSize;
-
-    increaseQty.addEventListener("click", event => {
-        alert("this")
-        const jwt = localStorage.getItem("jwt");
-        const products = productId;
-
-        if (!selectedSize) {
-            alert("Please select a size");
-            return;
-        }
-        if (!jwt) {
-            alert("Login to add this product to cart!");
-            return;
-        }
-
-        fetch(`${apiUrl}/cart/items//`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${jwt}`
-            },
-            body: JSON.stringify({
-                products,
-                size: selectedSize,
-            })
+    fetch(`${apiUrl}/cart/items/`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${jwt}`
+        },
+        body: JSON.stringify({
+            products,
+            size: itemSize,
         })
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error(res.statusText);
-                }
-                return res.json();
-            })
-            .then(data => {
-                console.log(data);
-                alert("Product added to cart");
-            })
-            .catch(error => {
-                console.error(error);
-                alert("Failed to add product to cart");
-            });
-    });
+    })
+        .then(res => {
+            if (!res.ok) {
+                throw new Error(res.statusText);
+            }
+            return res.json();
+        })
+        .then(data => {
+            const product = data.products.find(product => product.id === itemId);
+            document.getElementById("item-price").innerHTML = `R${product.price}`;
+            itemBtn.parentNode.querySelector('input[type=number]').value = product.quantity;
+            console.log(data);
+            alert("Product added to cart");
+        })
+        .catch(error => {
+            console.error(error);
+            alert("Failed to add product to cart");
+        });
 }
