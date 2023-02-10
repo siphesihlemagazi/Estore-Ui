@@ -37,7 +37,8 @@ fetch(`${apiUrl}/cart/items/`, {
                                 </span>${getCartItemColor(item.product.specifications)}</p>
                         </div>
                         <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
-                            <button class="btn btn-link px-2">
+                            <button class="btn btn-link px-2"
+                            onclick="decrementQty(${item.product.id}, '${item.size}', this)">
                                 <i class="bi bi-dash"></i>
                             </button>
             
@@ -50,7 +51,7 @@ fetch(`${apiUrl}/cart/items/`, {
                             </button>
                         </div>
                         <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
-                            <h5 class="mb-0" id="item-price">R${item.price}</h5>
+                            <h5 class="mb-0" id="item-price ${item.product.id}">R${item.price}</h5>
                         </div>
                         <div class="col-md-1 col-lg-1 col-xl-1 text-end">
                             <a href="#!" class="text-danger"><i class="bi bi-trash"></i></a>
@@ -109,14 +110,57 @@ function incrementQty(itemId, itemSize, itemBtn) {
             return res.json();
         })
         .then(data => {
+            const product = data.products.find(obj => obj.product.id === itemId)
+            document.getElementById(`item-price ${itemId}`).innerHTML = `R${product.price}`
+            itemBtn.parentNode.querySelector('input[type=number]').value = product.quantity;
+            alert("Cart product quantity incremented");
+        })
+        .catch(error => {
+            console.error(error);
+            alert("Failed to increment cart product quantity");
+        });
+}
+
+
+function decrementQty() {
+    const jwt = localStorage.getItem("jwt");
+    const products = itemId;
+
+    if (!itemSize) {
+        alert("Please select a size");
+        return;
+    }
+    if (!jwt) {
+        alert("Login to add this product to cart!");
+        return;
+    }
+
+    fetch(`${apiUrl}/cart/items/`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${jwt}`
+        },
+        body: JSON.stringify({
+            products,
+            size: itemSize,
+        })
+    })
+        .then(res => {
+            if (!res.ok) {
+                throw new Error(res.statusText);
+            }
+            return res.json();
+        })
+        .then(data => {
             const product = data.products.find(product => product.id === itemId);
             document.getElementById("item-price").innerHTML = `R${product.price}`;
             itemBtn.parentNode.querySelector('input[type=number]').value = product.quantity;
             console.log(data);
-            alert("Product added to cart");
+            alert("Cart product quantity decremented");
         })
         .catch(error => {
             console.error(error);
-            alert("Failed to add product to cart");
+            alert("Failed to decrement cart product quantity");
         });
 }
