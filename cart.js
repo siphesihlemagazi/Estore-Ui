@@ -51,7 +51,7 @@ fetch(`${apiUrl}/cart/items/`, {
                             </button>
                         </div>
                         <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
-                            <h5 class="mb-0" id="item-price ${item.product.id}">R${item.price}</h5>
+                            <h5 class="mb-0" id="item-price ${item.product.id} ${item.size}">R${item.price}</h5>
                         </div>
                         <div class="col-md-1 col-lg-1 col-xl-1 text-end">
                             <a href="#!" class="text-danger"><i class="bi bi-trash"></i></a>
@@ -110,8 +110,9 @@ function incrementQty(itemId, itemSize, itemBtn) {
             return res.json();
         })
         .then(data => {
-            const product = data.products.find(obj => obj.product.id === itemId)
-            document.getElementById(`item-price ${itemId}`).innerHTML = `R${product.price}`
+            const product = data.products.find(obj => obj.product.id === itemId && obj.size === itemSize)
+            console.log(data)
+            document.getElementById(`item-price ${itemId} ${itemSize}`).innerHTML = `R${product.price}`
             itemBtn.parentNode.querySelector('input[type=number]').value = product.quantity;
             alert("Cart product quantity incremented");
         })
@@ -122,7 +123,7 @@ function incrementQty(itemId, itemSize, itemBtn) {
 }
 
 
-function decrementQty() {
+function decrementQty(itemId, itemSize, itemBtn) {
     const jwt = localStorage.getItem("jwt");
     const products = itemId;
 
@@ -136,7 +137,7 @@ function decrementQty() {
     }
 
     fetch(`${apiUrl}/cart/items/`, {
-        method: "POST",
+        method: "DELETE",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${jwt}`
@@ -153,11 +154,15 @@ function decrementQty() {
             return res.json();
         })
         .then(data => {
-            const product = data.products.find(product => product.id === itemId);
-            document.getElementById("item-price").innerHTML = `R${product.price}`;
-            itemBtn.parentNode.querySelector('input[type=number]').value = product.quantity;
-            console.log(data);
-            alert("Cart product quantity decremented");
+            if (data.length > 1) {
+                let product = data.products.find(obj => obj.product.id === itemId && obj.size === itemSize)
+                document.getElementById(`item-price ${itemId}`).innerHTML = `R${product.price}`
+                itemBtn.parentNode.querySelector('input[type=number]').value = product.quantity;
+                alert("Cart product quantity decremented");
+            } else {
+                const cart = document.querySelector("#cart");
+                cart.innerHTML = "<h3 class='fw-normal mb-0 text-black'>Your shopping cart is empty</h3>"
+            }
         })
         .catch(error => {
             console.error(error);
