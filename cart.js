@@ -111,7 +111,6 @@ function incrementQty(itemId, itemSize, itemBtn) {
         })
         .then(data => {
             const product = data.products.find(obj => obj.product.id === itemId && obj.size === itemSize)
-            console.log(data)
             document.getElementById(`item-price ${itemId} ${itemSize}`).innerHTML = `R${product.price}`
             itemBtn.parentNode.querySelector('input[type=number]').value = product.quantity;
             alert("Cart product quantity incremented");
@@ -154,13 +153,17 @@ function decrementQty(itemId, itemSize, itemBtn) {
             return res.json();
         })
         .then(data => {
-            if (data.length > 1) {
-                let product = data.products.find(obj => obj.product.id === itemId && obj.size === itemSize)
-                document.getElementById(`item-price ${itemId}`).innerHTML = `R${product.price}`
-                itemBtn.parentNode.querySelector('input[type=number]').value = product.quantity;
-                alert("Cart product quantity decremented");
-            } else {
-                const cart = document.querySelector("#cart");
+            let product = data.products.find(obj => obj.product.id === itemId && obj.size === itemSize)
+            console.log(data.products.length)
+            if(data.products.length > 0){
+                if (product){
+                    document.getElementById(`item-price ${itemId} ${itemSize}`).innerHTML = `R${product.price}`
+                    itemBtn.parentNode.querySelector('input[type=number]').value = product.quantity;
+                    alert("Cart product quantity decremented");
+                } else{
+                    location.reload(); // maybe refetch cart
+                }
+            } else{
                 cart.innerHTML = "<h3 class='fw-normal mb-0 text-black'>Your shopping cart is empty</h3>"
             }
         })
