@@ -38,7 +38,7 @@ fetch(`${apiUrl}/cart/items/`, {
                         </div>
                         <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
                             <button class="btn btn-link px-2"
-                            onclick="decrementQty(${item.product.id}, '${item.size}', this)">
+                            onclick="deleteCartItemOrDecrementQty(${item.product.id}, '${item.size}', this)">
                                 <i class="bi bi-dash"></i>
                             </button>
             
@@ -53,7 +53,8 @@ fetch(`${apiUrl}/cart/items/`, {
                         <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
                             <h5 class="mb-0" id="item-price ${item.product.id} ${item.size}">R${item.price}</h5>
                         </div>
-                        <div class="col-md-1 col-lg-1 col-xl-1 text-end">
+                        <div class="col-md-1 col-lg-1 col-xl-1 text-end" 
+                        onclick="deleteCartItemOrDecrementQty(${item.product.id}, '${item.size}', this, 'delete')">
                             <a href="#!" class="text-danger"><i class="bi bi-trash"></i></a>
                         </div>
                     </div>
@@ -121,8 +122,7 @@ function incrementQty(itemId, itemSize, itemBtn) {
         });
 }
 
-
-function decrementQty(itemId, itemSize, itemBtn) {
+function deleteCartItemOrDecrementQty(itemId, itemSize, itemBtn, action = undefined) {
     const jwt = localStorage.getItem("jwt");
     const products = itemId;
 
@@ -135,16 +135,28 @@ function decrementQty(itemId, itemSize, itemBtn) {
         return;
     }
 
-    fetch(`${apiUrl}/cart/items/`, {
-        method: "DELETE",
+    let endpoint = `${apiUrl}/cart/items/`;
+    let method = "DELETE";
+    let body = JSON.stringify({
+        products,
+        size: itemSize,
+    });
+
+    if (action === 'delete') {
+        body = JSON.stringify({
+            products,
+            size: itemSize,
+            delete: 'delete'
+        });
+    }
+
+    fetch(endpoint, {
+        method,
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${jwt}`
         },
-        body: JSON.stringify({
-            products,
-            size: itemSize,
-        })
+        body
     })
         .then(res => {
             if (!res.ok) {
@@ -155,20 +167,20 @@ function decrementQty(itemId, itemSize, itemBtn) {
         .then(data => {
             let product = data.products.find(obj => obj.product.id === itemId && obj.size === itemSize)
             console.log(data.products.length)
-            if(data.products.length > 0){
-                if (product){
+            if (data.products.length > 0) {
+                if (product) {
                     document.getElementById(`item-price ${itemId} ${itemSize}`).innerHTML = `R${product.price}`
                     itemBtn.parentNode.querySelector('input[type=number]').value = product.quantity;
                     alert("Cart product quantity decremented");
-                } else{
+                } else {
                     location.reload(); // maybe refetch cart
                 }
-            } else{
+            } else {
                 cart.innerHTML = "<h3 class='fw-normal mb-0 text-black'>Your shopping cart is empty</h3>"
             }
         })
         .catch(error => {
             console.error(error);
-            alert("Failed to decrement cart product quantity");
+            alert("Failed to decrement/delete cart product quantity");
         });
 }
