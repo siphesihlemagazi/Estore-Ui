@@ -44,8 +44,8 @@ navbar.innerHTML = `
                     text-dark text-decoration-none" id="cart-url" href="cart.html">
                         <span class="shop-bag"><i class="bi bi-bag"></i></span>
                         <div class="d-flex flex-column ms-2">
-                            <span class="qty">1 Product(s)</span>
-                            <span class="fw-bold">R27.90</span>
+                            <span class="cart-qty">1 Product(s)</span>
+                            <span class="fw-bold cart-total">R27.90</span>
                         </div>
                     </a>
                 </div>

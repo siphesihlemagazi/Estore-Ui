@@ -60,6 +60,7 @@ fetch(`${apiUrl}/cart/items/`, {
                     </div>
                 </div>`;
                 cart.appendChild(cartItem);
+                globalCartTotal()
             });
         } else {
             cart.innerHTML = "<h3 class='fw-normal mb-0 text-black'>Your shopping cart is empty</h3>"
@@ -183,4 +184,11 @@ function deleteCartItemOrDecrementQty(itemId, itemSize, itemBtn, action = undefi
             console.error(error);
             alert("Failed to decrement/delete cart product quantity");
         });
+}
+
+
+
+function globalCartTotal() {
+    const cartTotals = document.querySelectorAll('.cart-qty');
+    console.log(cartTotals)
 }
