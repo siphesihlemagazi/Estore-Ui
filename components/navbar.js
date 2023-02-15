@@ -101,18 +101,18 @@ const logoutLink = authLinks.querySelector("a#logout");
 const cartLink = document.getElementById("cart-url");
 
 if (localStorage.getItem("jwt")) {
-  loginLink.style.display = "none";
-  registerLink.style.display = "none";
-  logoutLink.style.display = "block";
+    loginLink.style.display = "none";
+    registerLink.style.display = "none";
+    logoutLink.style.display = "block";
 } else {
-  loginLink.style.display = "block";
-  registerLink.style.display = "block";
-  logoutLink.style.display = "none";
-  cartLink.setAttribute("href", "auth/login.html");
+    loginLink.style.display = "block";
+    registerLink.style.display = "block";
+    logoutLink.style.display = "none";
+    cartLink.setAttribute("href", "auth/login.html");
 }
 
 // Logout
-logoutLink.addEventListener("click", function() {
-  localStorage.removeItem("jwt");
-  window.location.href = "../auth/login.html";
+logoutLink.addEventListener("click", function () {
+    localStorage.removeItem("jwt");
+    window.location.href = "../auth/login.html";
 });
